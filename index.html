@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pi Ngopi — Seteguk Ketenangan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F5EFE4;
+  --warm:#EDE3D2;
+  --brown:#3B2A1A;
+  --espresso:#1C1008;
+  --gold:#C8974A;
+  --gold2:#E8B96A;
+  --sage:#7A8C6E;
+  --text:#2E1F0F;
+  --muted:#7A6652;
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* ── NOISE TEXTURE ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:0.35;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 56px;
+  background:rgba(245,239,228,0.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(200,151,74,0.15);
+  transition:padding .35s ease, box-shadow .35s ease;
+}
+nav.scrolled{padding:13px 56px;box-shadow:0 4px 30px rgba(59,42,26,0.08);}
+
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.7rem;font-weight:700;letter-spacing:.03em;
+  color:var(--brown);text-decoration:none;
+}
+.nav-logo span{color:var(--gold)}
+
+.nav-links{display:flex;gap:32px;list-style:none;align-items:center}
+.nav-links a{
+  font-size:.82rem;font-weight:500;letter-spacing:.1em;
+  color:var(--muted);text-decoration:none;text-transform:uppercase;
+  position:relative;padding-bottom:4px;
+  transition:color .25s;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;
+}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{transform:scaleX(1);}
+
+.nav-cta{
+  background:var(--brown)!important;color:var(--cream)!important;
+  padding:10px 26px;border-radius:50px;letter-spacing:.08em;
+  transition:background .25s, transform .2s !important;
+}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{background:var(--gold)!important;color:var(--espresso)!important;transform:translateY(-2px);}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--brown);border-radius:2px;transition:.3s}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  background:var(--espresso);position:relative;overflow:hidden;padding:110px 56px 70px;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 800px 600px at 75% 55%,rgba(200,151,74,0.14),transparent),
+    radial-gradient(ellipse 500px 400px at 10% 70%,rgba(122,140,110,0.1),transparent);
+}
+.hero-dots{
+  position:absolute;inset:0;
+  background-image:radial-gradient(rgba(200,151,74,0.12) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.hero-inner{position:relative;z-index:2;max-width:600px}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(200,151,74,0.14);border:1px solid rgba(200,151,74,0.3);
+  border-radius:50px;padding:7px 18px;margin-bottom:28px;
+  font-size:.72rem;font-weight:700;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;
+  animation:fadeUp .7s ease both;
+}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(56px,7vw,100px);font-weight:300;line-height:.95;
+  letter-spacing:-2px;color:#fff;
+  animation:fadeUp .7s .1s ease both;
+}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero h1 strong{font-weight:700}
+
+.hero-sub{
+  font-size:16px;font-weight:300;color:rgba(245,239,228,0.55);
+  line-height:1.8;margin:28px 0 40px;
+  animation:fadeUp .7s .2s ease both;
+}
+.hero-sub strong{color:rgba(245,239,228,0.9);font-weight:500}
+
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp .7s .3s ease both}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold),#a87238);
+  color:var(--espresso);font-weight:700;font-size:.9rem;
+  padding:15px 34px;border-radius:50px;text-decoration:none;
+  transition:all .25s;border:none;cursor:pointer;font-family:inherit;
+  letter-spacing:.04em;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,151,74,0.4)}
+
+.btn-ghost{
+  background:transparent;color:rgba(245,239,228,0.8);font-weight:500;font-size:.9rem;
+  padding:14px 30px;border-radius:50px;text-decoration:none;
+  border:1.5px solid rgba(245,239,228,0.2);transition:all .25s;letter-spacing:.04em;
+}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Hero right visual */
+.hero-right{
+  position:absolute;right:0;top:0;bottom:0;width:48%;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-visual{position:relative;width:420px;height:420px;animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.big-emoji{font-size:180px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);filter:drop-shadow(0 24px 60px rgba(200,151,74,0.35))}
+.glow-ring{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:340px;height:340px;border-radius:50%;
+  border:1px solid rgba(200,151,74,0.18);
+  box-shadow:0 0 80px rgba(200,151,74,0.08);
+}
+.glow-ring2{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:270px;height:270px;border-radius:50%;
+  border:1px solid rgba(200,151,74,0.1);
+}
+.orbit{position:absolute;inset:0;animation:spin 15s linear infinite}
+.orbit-item{position:absolute;font-size:38px;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.3))}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── STATS ── */
+.stats{
+  background:var(--gold);padding:24px 56px;
+  display:flex;
+}
+.stat{flex:1;text-align:center;padding:0 20px;border-right:1.5px solid rgba(28,16,8,0.15)}
+.stat:last-child{border-right:none}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--espresso);line-height:1}
+.stat-lbl{font-size:.72rem;font-weight:600;color:rgba(28,16,8,0.55);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ── SECTION BASE ── */
+section{padding:88px 56px}
+.container{max-width:1180px;margin:0 auto}
+.section-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2rem,4vw,3.4rem);font-weight:400;letter-spacing:-.02em;
+  line-height:1.1;margin-bottom:12px;color:var(--brown);
+}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-sub{font-size:.95rem;font-weight:300;color:var(--muted);max-width:480px;line-height:1.8;margin-bottom:52px}
+
+/* ── MENU / CATALOG ── */
+#menu{background:var(--warm)}
+.menu-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
+.menu-tab{
+  padding:9px 22px;border-radius:50px;
+  font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  cursor:pointer;border:1.5px solid transparent;
+  transition:all .2s;background:transparent;color:var(--muted);font-family:inherit;
+}
+.menu-tab:hover{border-color:var(--gold);color:var(--gold)}
+.menu-tab.active{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+
+.menu-card{
+  background:var(--cream);border-radius:var(--radius);overflow:hidden;
+  transition:transform .3s,box-shadow .3s;cursor:pointer;
+  border:2px solid transparent;
+}
+.menu-card:hover{transform:translateY(-6px);box-shadow:0 20px 56px rgba(59,42,26,0.13);border-color:var(--gold)}
+
+.menu-thumb{
+  height:175px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.food-emoji{font-size:72px;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.15));position:relative;z-index:1;transition:transform .35s}
+.menu-card:hover .food-emoji{transform:scale(1.12) rotate(-4deg)}
+.bg-shape{position:absolute;width:150px;height:150px;border-radius:50%;opacity:.1}
+
+.menu-body{padding:20px}
+.menu-badge{
+  display:inline-block;font-size:.65rem;font-weight:700;
+  padding:3px 10px;border-radius:50px;margin-bottom:9px;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.badge-hot{background:rgba(200,151,74,0.15);color:#9a6800}
+.badge-best{background:rgba(59,42,26,0.08);color:var(--brown)}
+.badge-new{background:rgba(122,140,110,0.15);color:var(--sage)}
+
+.menu-nama{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;margin-bottom:5px;color:var(--brown)}
+.menu-desc{font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.menu-footer{display:flex;align-items:center;justify-content:space-between}
+.menu-harga{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--gold)}
+.menu-harga span{font-size:.75rem;font-weight:400;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif}
+.add-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--brown);color:var(--cream);font-size:20px;font-weight:700;
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-family:inherit;
+}
+.add-btn:hover{background:var(--gold);transform:scale(1.1)}
+
+/* ── SIGNATURE ── */
+#signature{background:var(--espresso)}
+#signature .section-title{color:#fff}
+#signature .section-eyebrow{color:var(--gold2)}
+#signature .section-sub{color:rgba(245,239,228,0.45)}
+
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.sig-visual{
+  aspect-ratio:1;border-radius:var(--radius);
+  background:linear-gradient(135deg,#3b2a1a 0%,#6b4520 50%,#c8974a 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:120px;position:relative;overflow:hidden;
+}
+.sig-visual::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(28,16,8,0.75),transparent 60%);
+}
+.sig-caption{
+  position:absolute;bottom:24px;left:24px;right:24px;z-index:2;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem;color:var(--cream);font-weight:300;font-style:italic;
+}
+.sig-list{display:flex;flex-direction:column;gap:20px}
+.sig-item{
+  display:flex;gap:18px;align-items:flex-start;
+  padding:20px;border-radius:var(--radius);
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(200,151,74,0.12);
+  transition:border-color .2s,background .2s;cursor:pointer;
+}
+.sig-item:hover{border-color:var(--gold);background:rgba(200,151,74,0.06)}
+.sig-icon{font-size:2rem;flex-shrink:0}
+.sig-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--cream)}
+.sig-desc{font-size:.8rem;color:rgba(245,239,228,0.45);margin-top:3px;line-height:1.5}
+.sig-price{font-size:.9rem;font-weight:600;color:var(--gold);margin-top:7px}
+
+/* ── PAKET ── */
+#paket{background:var(--cream)}
+.paket-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.paket-card{
+  background:#fff;border-radius:var(--radius);padding:32px;text-align:center;
+  border:2px solid rgba(59,42,26,0.06);transition:all .3s;position:relative;overflow:hidden;
+}
+.paket-card.featured{
+  background:linear-gradient(135deg,var(--brown),var(--espresso));
+  border-color:var(--gold);
+}
+.paket-card.featured .paket-nama,.paket-card.featured .paket-harga{color:#fff}
+.paket-card.featured .paket-sub,.paket-card.featured .paket-isi li{color:rgba(255,255,255,0.5)}
+.paket-card:hover{transform:translateY(-5px);box-shadow:0 18px 50px rgba(59,42,26,0.12)}
+
+.featured-ribbon{
+  position:absolute;top:18px;right:-30px;
+  background:var(--gold);color:var(--espresso);font-size:.65rem;font-weight:800;
+  padding:6px 44px;transform:rotate(35deg);letter-spacing:.08em;text-transform:uppercase;
+}
+.paket-emoji{font-size:3.2rem;margin-bottom:16px}
+.paket-nama{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;color:var(--brown);margin-bottom:4px}
+.paket-sub{font-size:.78rem;color:var(--muted);margin-bottom:18px}
+.paket-isi{list-style:none;margin-bottom:22px;text-align:left}
+.paket-isi li{
+  font-size:.82rem;color:var(--text);padding:7px 0;
+  border-bottom:1px dashed rgba(59,42,26,0.08);
+  display:flex;align-items:center;gap:8px;
+}
+.paket-isi li::before{content:'✓';color:var(--gold);font-weight:700;font-size:.75rem}
+.paket-harga{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);margin-bottom:18px}
+.paket-btn{
+  width:100%;background:var(--brown);color:var(--cream);font-weight:700;font-size:.82rem;
+  padding:13px;border-radius:50px;border:none;cursor:pointer;font-family:inherit;
+  transition:all .2s;text-transform:uppercase;letter-spacing:.06em;
+}
+.paket-btn:hover{background:var(--gold);color:var(--espresso)}
+.paket-card.featured .paket-btn{background:var(--gold);color:var(--espresso)}
+.paket-card.featured .paket-btn:hover{background:#fff}
+
+/* ── CARA ORDER ── */
+#cara{background:var(--warm)}
+.cara-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.cara-step{text-align:center;padding:28px 16px;position:relative}
+.cara-step:not(:last-child)::after{
+  content:'→';position:absolute;right:-12px;top:30px;
+  font-size:20px;color:rgba(59,42,26,0.15);
+}
+.step-num{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold),#8b6020);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:#fff;
+  margin:0 auto 14px;
+}
+.step-emoji{font-size:1.8rem;margin-bottom:10px}
+.step-title{font-size:.9rem;font-weight:700;color:var(--brown);margin-bottom:6px}
+.step-desc{font-size:.78rem;color:var(--muted);line-height:1.6}
+
+/* ── TESTIMONI ── */
+#ulasan{background:var(--cream)}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+.testi-card{
+  background:#fff;border-radius:var(--radius);padding:26px;
+  border:1px solid rgba(200,151,74,0.12);
+  box-shadow:0 4px 20px rgba(59,42,26,0.05);
+  transition:transform .3s;
+}
+.testi-card:hover{transform:translateY(-4px)}
+.testi-stars{color:var(--gold);font-size:.95rem;letter-spacing:2px;margin-bottom:12px}
+.testi-text{font-size:.85rem;color:var(--text);line-height:1.75;margin-bottom:16px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--brown));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:.85rem;flex-shrink:0;
+}
+.testi-name{font-size:.82rem;font-weight:600;color:var(--brown)}
+.testi-loc{font-size:.72rem;color:var(--muted)}
+
+/* ── CTA ── */
+#cta{
+  background:linear-gradient(135deg,var(--brown),var(--espresso));
+  text-align:center;padding:90px 56px;position:relative;overflow:hidden;
+}
+#cta::before{content:'☕';position:absolute;font-size:300px;opacity:0.03;top:50%;left:50%;transform:translate(-50%,-50%)}
+#cta h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:300;color:#fff;margin-bottom:14px;letter-spacing:-.02em}
+#cta h2 em{color:var(--gold);font-style:italic}
+#cta p{font-size:1rem;color:rgba(245,239,228,0.5);margin-bottom:36px;font-weight:300}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.wa-btn{
+  display:flex;align-items:center;gap:10px;
+  background:#25D366;color:#fff;font-weight:700;font-size:.9rem;
+  padding:15px 32px;border-radius:50px;text-decoration:none;transition:all .25s;
+}
+.wa-btn:hover{background:#1da851;transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,211,102,0.3)}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--espresso);padding:44px 56px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;
+}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--cream)}
+.footer-logo span{color:var(--gold)}
+.footer-info{font-size:.8rem;color:rgba(245,239,228,0.38);line-height:1.9}
+.footer-links{display:flex;gap:24px;flex-wrap:wrap}
+.footer-links a{color:rgba(245,239,228,0.35);text-decoration:none;font-size:.78rem;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{font-size:.72rem;color:rgba(245,239,228,0.2);margin-top:8px}
+
+/* ── MOBILE NAV ── */
+.mobile-nav{
+  display:none;position:fixed;inset:0;background:var(--cream);
+  z-index:800;flex-direction:column;align-items:center;justify-content:center;gap:32px;
+}
+.mobile-nav.open{display:flex}
+.mobile-nav a{
+  font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;
+  color:var(--brown);text-decoration:none;transition:color .2s;
+}
+.mobile-nav a:hover{color:var(--gold)}
+.mobile-close{
+  position:absolute;top:24px;right:28px;background:none;border:none;
+  font-size:1.8rem;color:var(--muted);cursor:pointer;
+}
+
+/* ── CART FLOAT ── */
+.cart-float{
+  position:fixed;bottom:28px;right:28px;z-index:200;
+  background:var(--brown);color:var(--cream);border:none;border-radius:50px;
+  padding:13px 22px;font-size:.85rem;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 8px 32px rgba(59,42,26,0.35);transition:all .3s;font-family:inherit;
+  transform:translateY(100px);opacity:0;
+}
+.cart-float.show{transform:translateY(0);opacity:1}
+.cart-float:hover{background:var(--gold);color:var(--espresso);transform:translateY(-2px)}
+.cart-float.show:hover{transform:translateY(-2px)}
+.cart-num{
+  background:var(--gold);color:var(--espresso);width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;
+}
+
+/* ── CART MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);
+  z-index:300;backdrop-filter:blur(5px);display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.cart-panel{
+  background:var(--cream);border-radius:24px 24px 0 0;width:100%;max-height:80vh;overflow-y:auto;
+  padding:30px;transform:translateY(100%);transition:transform .35s;
+}
+.modal-overlay.show .cart-panel{transform:translateY(0)}
+.cp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.cp-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--brown)}
+.cp-close{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted);transition:color .2s}
+.cp-close:hover{color:var(--brown)}
+.cp-item{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--warm)}
+.cp-emoji{font-size:2rem}
+.cp-info{flex:1}
+.cp-name{font-size:.9rem;font-weight:600;color:var(--brown)}
+.cp-price{font-size:.82rem;color:var(--gold);font-weight:600}
+.cp-qty{display:flex;align-items:center;gap:8px}
+.cp-qbtn{width:28px;height:28px;border-radius:8px;background:var(--warm);border:none;cursor:pointer;font-size:1rem;font-weight:700;color:var(--brown);transition:background .2s}
+.cp-qbtn:hover{background:var(--gold);color:#fff}
+.cp-total{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--brown);margin:18px 0 12px;text-align:right}
+.order-btn{
+  width:100%;background:linear-gradient(135deg,var(--gold),#a87238);
+  color:var(--espresso);font-weight:800;font-size:.95rem;padding:15px;
+  border:none;border-radius:50px;cursor:pointer;font-family:inherit;transition:all .2s;
+}
+.order-btn:hover{opacity:.9;transform:translateY(-1px)}
+.empty-cart{text-align:center;padding:40px;color:var(--muted);font-size:.9rem}
+.empty-cart a{color:var(--gold);font-weight:700}
+
+/* ── NOTIF TOAST ── */
+.toast{
+  position:fixed;bottom:88px;right:28px;
+  background:var(--brown);color:var(--cream);
+  padding:12px 20px;border-radius:12px;font-size:.82rem;font-weight:600;
+  z-index:9999;animation:fadeUp .3s ease;
+}
+
+/* ── REVEAL ANIM ── */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:15px 20px}
+  nav.scrolled{padding:11px 20px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero{padding:90px 20px 50px;flex-direction:column;min-height:auto}
+  .hero-right{position:relative;width:100%;height:260px;margin-top:32px}
+  .hero-visual{width:260px;height:260px}
+  .big-emoji{font-size:110px}
+  .glow-ring{width:220px;height:220px}.glow-ring2{width:170px;height:170px}
+  section{padding:64px 20px}
+  .menu-grid{grid-template-columns:repeat(2,1fr)}
+  .sig-grid,.paket-grid{grid-template-columns:1fr}
+  .cara-grid{grid-template-columns:repeat(2,1fr)}
+  .testi-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;padding:36px 20px;text-align:center}
+  .footer-links{justify-content:center}
+  .stats{flex-wrap:wrap}
+  .stat{flex:1 1 45%;border-right:none;border-bottom:1px solid rgba(28,16,8,0.12);padding:14px}
+}
+@media(max-width:560px){
+  .menu-grid{grid-template-columns:1fr}
+  .cara-grid{grid-template-columns:1fr}
+  .cara-step:not(:last-child)::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">Pi <span>Ngopi</span></a>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#paket">Paket</a></li>
+    <li><a href="#ulasan">Ulasan</a></li>
+    <li><a href="#cta" class="nav-cta">Pesan Sekarang</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Buka menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-close" onclick="closeMobile()">✕</button>
+  <a href="#menu" onclick="closeMobile()">Menu</a>
+  <a href="#paket" onclick="closeMobile()">Paket</a>
+  <a href="#ulasan" onclick="closeMobile()">Ulasan</a>
+  <a href="#cta" onclick="closeMobile()">Pesan</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="hero-badge-dot"></div> Kafe Kopi · Kraksaan</div>
+    <h1>Seteguk<br><em>Ketenangan</em><br><strong>Itu Nyata</strong></h1>
+    <p class="hero-sub">
+      Dari biji pilihan hingga secangkir yang sempurna —<br>
+      <strong>Pi Ngopi</strong> hadir untuk menemani momen terbaikmu.
+    </p>
+    <div class="hero-actions">
+      <a href="#menu" class="btn-primary">☕ Lihat Menu</a>
+      <a href="#cta" class="btn-ghost">Pesan via WA</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="glow-ring2"></div>
+      <div class="glow-ring"></div>
+      <div class="big-emoji">☕</div>
+      <div class="orbit">
+        <div class="orbit-item" style="top:0;left:50%;transform:translateX(-50%)">🫘</div>
+        <div class="orbit-item" style="bottom:0;left:50%;transform:translateX(-50%)">🍰</div>
+        <div class="orbit-item" style="left:0;top:50%;transform:translateY(-50%)">🌿</div>
+        <div class="orbit-item" style="right:0;top:50%;transform:translateY(-50%)">✨</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat reveal"><div class="stat-num">800+</div><div class="stat-lbl">Pelanggan Setia</div></div>
+  <div class="stat reveal d1"><div class="stat-num">20+</div><div class="stat-lbl">Menu Pilihan</div></div>
+  <div class="stat reveal d2"><div class="stat-num">4.9⭐</div><div class="stat-lbl">Rating Rata-rata</div></div>
+  <div class="stat reveal d3"><div class="stat-num">100%</div><div class="stat-lbl">Freshly Brewed</div></div>
+</div>
+
+<!-- MENU CATALOG -->
+<section id="menu">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-eyebrow">Menu Kami</div>
+      <h2 class="section-title">Temukan <em>Favoritmu</em></h2>
+      <p class="section-sub">Semua diseduh fresh saat pesananmu masuk. Dipilih dengan cinta, disajikan dengan hangat.</p>
+    </div>
+    <div class="menu-tabs reveal">
+      <button class="menu-tab active" onclick="filterMenu('semua',this)">Semua</button>
+      <button class="menu-tab" onclick="filterMenu('kopi',this)">☕ Kopi</button>
+      <button class="menu-tab" onclick="filterMenu('nonkopi',this)">🍵 Non-Kopi</button>
+      <button class="menu-tab" onclick="filterMenu('makanan',this)">🍽 Makanan</button>
+    </div>
+    <div class="menu-grid reveal" id="menuGrid"></div>
+  </div>
+</section>
+
+<!-- SIGNATURE -->
+<section id="signature">
+  <div class="container">
+    <div class="sig-grid">
+      <div class="sig-visual reveal">
+        ☕
+        <div class="sig-caption">Crafted with<br>purpose.</div>
+      </div>
+      <div class="reveal d1">
+        <div class="section-eyebrow">Spesial</div>
+        <h2 class="section-title" style="color:#fff">Signature <em>Pi Ngopi</em></h2>
+        <p class="section-sub">Menu eksklusif yang hanya ada di sini — karya barista kami yang penuh dedikasi.</p>
+        <div class="sig-list" id="sigList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAKET -->
+<section id="paket">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-eyebrow">Paket Hemat</div>
+      <h2 class="section-title">Ngopi Bareng, <em>Lebih Hemat!</em></h2>
+      <p class="section-sub" style="margin:0 auto 48px">Cocok buat nongkrong bareng teman, meeting santai, atau quality time keluarga.</p>
+    </div>
+    <div class="paket-grid">
+      <div class="paket-card reveal">
+        <div class="paket-emoji">☕</div>
+        <div class="paket-nama">Paket Solo</div>
+        <div class="paket-sub">Buat 1 orang</div>
+        <ul class="paket-isi">
+          <li>1 Kopi Pilihan (S)</li>
+          <li>1 Snack Ringan</li>
+          <li>Free WiFi + Colokan</li>
+        </ul>
+        <div class="paket-harga">Rp 25.000</div>
+        <button class="paket-btn" onclick="orderPaket('Paket Solo','Rp 25.000')">Pesan Sekarang</button>
+      </div>
+      <div class="paket-card featured reveal d1">
+        <div class="featured-ribbon">Terlaris</div>
+        <div class="paket-emoji">🎉</div>
+        <div class="paket-nama">Paket Duo</div>
+        <div class="paket-sub">Buat 2 orang</div>
+        <ul class="paket-isi">
+          <li>2 Kopi Pilihan (M)</li>
+          <li>2 Slice Cake</li>
+          <li>Free Refill Air Putih</li>
+          <li>Free WiFi + Colokan</li>
+        </ul>
+        <div class="paket-harga">Rp 68.000</div>
+        <button class="paket-btn" onclick="orderPaket('Paket Duo','Rp 68.000')">Pesan Sekarang</button>
+      </div>
+      <div class="paket-card reveal d2">
+        <div class="paket-emoji">👥</div>
+        <div class="paket-nama">Paket Rombongan</div>
+        <div class="paket-sub">Buat 4–6 orang</div>
+        <ul class="paket-isi">
+          <li>6 Minuman Bebas Pilih</li>
+          <li>1 Nampan Snack Mix</li>
+          <li>1 Kue Ulang Tahun (opsional)</li>
+          <li>Private Corner Area</li>
+          <li>Free WiFi + Colokan</li>
+        </ul>
+        <div class="paket-harga">Rp 175.000</div>
+        <button class="paket-btn" onclick="orderPaket('Paket Rombongan','Rp 175.000')">Pesan Sekarang</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARA ORDER -->
+<section id="cara">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-eyebrow">Cara Order</div>
+      <h2 class="section-title">Mudah & <em>Cepat</em> ✨</h2>
+      <p class="section-sub" style="margin:0 auto 48px">Pesan kopi favoritmu dalam 4 langkah sederhana.</p>
+    </div>
+    <div class="cara-grid">
+      <div class="cara-step reveal">
+        <div class="step-num">1</div>
+        <div class="step-emoji">📱</div>
+        <div class="step-title">Pilih Menu</div>
+        <p class="step-desc">Pilih minuman atau makanan favoritmu dari katalog di atas</p>
+      </div>
+      <div class="cara-step reveal d1">
+        <div class="step-num">2</div>
+        <div class="step-emoji">🛒</div>
+        <div class="step-title">Tambah Keranjang</div>
+        <p class="step-desc">Klik tombol + untuk memasukkan menu ke keranjang pesananmu</p>
+      </div>
+      <div class="cara-step reveal d2">
+        <div class="step-num">3</div>
+        <div class="step-emoji">💬</div>
+        <div class="step-title">Kirim via WA</div>
+        <p class="step-desc">Pesan langsung dikirim ke WhatsApp kami secara otomatis</p>
+      </div>
+      <div class="cara-step reveal d3">
+        <div class="step-num">4</div>
+        <div class="step-emoji">☕</div>
+        <div class="step-title">Menikmati!</div>
+        <p class="step-desc">Kopi diseduh fresh, disajikan hangat. Datang & nikmati!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ULASAN -->
+<section id="ulasan">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <div class="section-eyebrow">Ulasan Pelanggan</div>
+      <h2 class="section-title">Kata <em>Mereka</em> 💬</h2>
+      <p class="section-sub" style="margin:0 auto">Ratusan pelanggan sudah puas. Kapan giliran kamu?</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Matcha latte-nya enak banget dan tampilannya cantik! Suasananya cozy, betah berlama-lama. Definitely my go-to cafe di Kraksaan!"</p>
+        <div class="testi-author">
+          <div class="testi-av">SR</div>
+          <div><div class="testi-name">Siti Rahma</div><div class="testi-loc">📍 Kraksaan</div></div>
+        </div>
+      </div>
+      <div class="testi-card reveal d1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Cold brew-nya top! Gak terlalu asam, smooth banget. Avocado toast-nya juga recommended. Harga terjangkau untuk kualitas sebegini."</p>
+        <div class="testi-author">
+          <div class="testi-av">AF</div>
+          <div><div class="testi-name">Ahmad Fauzi</div><div class="testi-loc">📍 Paiton</div></div>
+        </div>
+      </div>
+      <div class="testi-card reveal d2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Butterfly Pea Tea-nya unik banget! Pi Ngopi selalu punya sesuatu yang baru dan menarik. Staff-nya ramah, pelayanan cepat. 10/10!"</p>
+        <div class="testi-author">
+          <div class="testi-av">DM</div>
+          <div><div class="testi-name">Dina Maulida</div><div class="testi-loc">📍 Probolinggo</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="reveal">
+      <h2>Sudah lapar & haus?<br><em>Yuk ke Pi Ngopi!</em></h2>
+      <p>Freshly brewed, selalu dengan cinta. Mampir atau pesan via WhatsApp sekarang.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/6285335101970?text=Halo%20Pi%20Ngopi!%20Saya%20mau%20pesan%20ya%20☕" class="wa-btn" target="_blank">
+          <span style="font-size:1.3rem">💬</span> Order via WhatsApp
+        </a>
+        <a href="#menu" class="btn-ghost" style="color:rgba(245,239,228,0.8);border-color:rgba(245,239,228,0.2)">🍽 Lihat Menu Dulu</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Pi <span>Ngopi</span></div>
+    <div class="footer-info" style="margin-top:8px">
+      📍 Kraksaan, Probolinggo, Jawa Timur<br>
+      📱 0853-3510-1970<br>
+      🕐 Setiap Hari · 08.00 – 22.00 WIB
+    </div>
+  </div>
+  <div>
+    <div class="footer-links">
+      <a href="#menu">Menu</a>
+      <a href="#paket">Paket</a>
+      <a href="#ulasan">Ulasan</a>
+      <a href="https://wa.me/6285335101970" target="_blank">WhatsApp</a>
+    </div>
+    <div class="footer-copy">© 2025 Pi Ngopi. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- CART FLOAT -->
+<button class="cart-float" id="cartFloat" onclick="toggleCart()">
+  🛒 Keranjang <span class="cart-num" id="cartNum">0</span>
+</button>
+
+<!-- CART MODAL -->
+<div class="modal-overlay" id="cartModal" onclick="closeCartOutside(event)">
+  <div class="cart-panel">
+    <div class="cp-header">
+      <div class="cp-title">Keranjang Kamu ☕</div>
+      <button class="cp-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ── */
+const menuData = [
+  {id:1,nama:'Espresso Classico',desc:'Double shot espresso arabika pilihan — pekat, bold, dan penuh karakter.',harga:22000,emoji:'☕',badge:'badge-hot',badgeLabel:'🔥 Terpopuler',bg:'#3b2a1a',kat:'kopi'},
+  {id:2,nama:'Signature Latte',desc:'Espresso creamy dengan susu oat segar, notes caramel dan dark chocolate.',harga:32000,emoji:'🥛',badge:'badge-best',badgeLabel:'⭐ Best Seller',bg:'#c8974a',kat:'kopi'},
+  {id:3,nama:'Cold Brew Smooth',desc:'Diseduh dingin 18 jam — smooth, rendah asam, cocok untuk hari panas.',harga:30000,emoji:'🧊',badge:'badge-best',badgeLabel:'⭐ Favorit',bg:'#1c3050',kat:'kopi'},
+  {id:4,nama:'Matcha Latte Art',desc:'Matcha ceremonial grade dengan susu segar dan latte art cantik.',harga:35000,emoji:'🍵',badge:'badge-new',badgeLabel:'✨ New!',bg:'#3a6040',kat:'nonkopi'},
+  {id:5,nama:'Butterfly Pea Tea',desc:'Teh bunga telang ajaib yang berubah warna saat ditambah lemon. Wow effect!',harga:27000,emoji:'🌸',badge:'badge-new',badgeLabel:'✨ Trending',bg:'#4a2a7a',kat:'nonkopi'},
+  {id:6,nama:'Taro Creamy',desc:'Minuman taro lembut dengan topping boba kenyal. Manis dan mengenyangkan.',harga:28000,emoji:'🫧',badge:'badge-best',badgeLabel:'⭐ Recommended',bg:'#7a4a8a',kat:'nonkopi'},
+  {id:7,nama:'Avocado Toast',desc:'Roti sourdough dengan alpukat segar, telur poach, dan taburan flakes.',harga:38000,emoji:'🥑',badge:'badge-best',badgeLabel:'⭐ Klasik',bg:'#3a5a2a',kat:'makanan'},
+  {id:8,nama:'Creamy Pasta',desc:'Pasta saus truffle cream yang kaya — menu berat terfavorit pelanggan setia.',harga:48000,emoji:'🍝',badge:'badge-hot',badgeLabel:'🔥 Chef\'s Pick',bg:'#6a3a1a',kat:'makanan'},
+  {id:9,nama:'Club Sandwich',desc:'Roti lapis berlapis chicken, egg, cheese, dan sayuran segar. Hearty!',harga:36000,emoji:'🥪',badge:'badge-best',badgeLabel:'⭐ Bestseller',bg:'#4a5a2a',kat:'makanan'},
+];
+
+const sigData = [
+  {id:10,nama:'Pi Signature Blend',desc:'Racikan barista kami — arabika + robusta dengan notes caramel, dark choco, dan floral.',harga:35000,emoji:'🫘'},
+  {id:11,nama:'Nangka Cold Brew',desc:'Cold brew edisi lokal — infused dengan nangka segar Probolinggo. Unik dan menyegarkan.',harga:33000,emoji:'🍈'},
+  {id:12,nama:'Dirty Matcha Espresso',desc:'Kombinasi matcha ceremonial dan double shot espresso. Untuk jiwa pemberani.',harga:38000,emoji:'🌿'},
+];
+
+let cart = [];
+const allItems = [...menuData,...sigData];
+
+/* ── RENDER MENU ── */
+function renderMenu(){
+  document.getElementById('menuGrid').innerHTML = menuData.map(m=>`
+    <div class="menu-card reveal" data-kat="${m.kat}">
+      <div class="menu-thumb" style="background:linear-gradient(135deg,${m.bg}33,${m.bg}66)">
+        <div class="bg-shape" style="background:${m.bg}"></div>
+        <div class="food-emoji">${m.emoji}</div>
+      </div>
+      <div class="menu-body">
+        <span class="menu-badge ${m.badge}">${m.badgeLabel}</span>
+        <div class="menu-nama">${m.nama}</div>
+        <div class="menu-desc">${m.desc}</div>
+        <div class="menu-footer">
+          <div class="menu-harga">Rp ${m.harga.toLocaleString('id-ID')}<span>/pcs</span></div>
+          <button class="add-btn" onclick="addToCart(${m.id})">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('sigList').innerHTML = sigData.map(m=>`
+    <div class="sig-item reveal" onclick="addToCart(${m.id})">
+      <div class="sig-icon">${m.emoji}</div>
+      <div>
+        <div class="sig-name">${m.nama}</div>
+        <div class="sig-desc">${m.desc}</div>
+        <div class="sig-price">Rp ${m.harga.toLocaleString('id-ID')} — klik untuk tambah</div>
+      </div>
+    </div>
+  `).join('');
+
+  initReveal();
+}
+
+/* ── FILTER ── */
+function filterMenu(cat, btn){
+  document.querySelectorAll('.menu-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.menu-card').forEach(card=>{
+    const show = cat==='semua' || card.dataset.kat===cat;
+    card.style.display = show ? '' : 'none';
+    if(show) card.style.animation='fadeUp .4s ease both';
+  });
+}
+
+/* ── CART ── */
+function addToCart(id){
+  const item=allItems.find(m=>m.id===id);
+  if(!item)return;
+  const exist=cart.find(c=>c.id===id);
+  if(exist)exist.qty++;
+  else cart.push({...item,qty:1});
+  updateCart();
+  showToast('✅ '+item.nama+' ditambahkan!');
+}
+function removeCart(id){cart=cart.filter(c=>c.id!==id);updateCart()}
+function changeQty(id,d){
+  const item=cart.find(c=>c.id===id);
+  if(!item)return;
+  item.qty+=d;
+  if(item.qty<=0)removeCart(id);
+  else updateCart();
+}
+
+function updateCart(){
+  const total=cart.reduce((a,b)=>a+b.qty,0);
+  const totalHarga=cart.reduce((a,b)=>a+b.harga*b.qty,0);
+  document.getElementById('cartNum').textContent=total;
+  const btn=document.getElementById('cartFloat');
+  btn.className='cart-float'+(total>0?' show':'');
+  const content=document.getElementById('cartContent');
+  if(!cart.length){
+    content.innerHTML='<div class="empty-cart">☕<br><br>Keranjang masih kosong.<br><br><a href="#menu" onclick="toggleCart()">Pilih menu dulu →</a></div>';
+    return;
+  }
+  content.innerHTML=cart.map(c=>`
+    <div class="cp-item">
+      <div class="cp-emoji">${c.emoji}</div>
+      <div class="cp-info">
+        <div class="cp-name">${c.nama}</div>
+        <div class="cp-price">Rp ${(c.harga*c.qty).toLocaleString('id-ID')}</div>
+      </div>
+      <div class="cp-qty">
+        <button class="cp-qbtn" onclick="changeQty(${c.id},-1)">−</button>
+        <span style="font-weight:700;min-width:20px;text-align:center">${c.qty}</span>
+        <button class="cp-qbtn" onclick="changeQty(${c.id},1)">+</button>
+      </div>
+    </div>
+  `).join('')+
+  `<div class="cp-total">Total: Rp ${totalHarga.toLocaleString('id-ID')}</div>
+   <button class="order-btn" onclick="orderViaWA()">💬 Order via WhatsApp</button>`;
+}
+
+function orderViaWA(){
+  let msg='Halo Pi Ngopi! ☕ Saya mau order:\n\n';
+  cart.forEach(c=>msg+=`• ${c.nama} x${c.qty} = Rp ${(c.harga*c.qty).toLocaleString('id-ID')}\n`);
+  msg+=`\nTotal: Rp ${cart.reduce((a,b)=>a+b.harga*b.qty,0).toLocaleString('id-ID')}\n\nMohon konfirmasi ya!`;
+  window.open('https://wa.me/6285335101970?text='+encodeURIComponent(msg),'_blank');
+}
+
+function orderPaket(nama,harga){
+  const msg=`Halo Pi Ngopi! ☕ Saya mau order ${nama} (${harga}). Mohon konfirmasi ya!`;
+  window.open('https://wa.me/6285335101970?text='+encodeURIComponent(msg),'_blank');
+}
+
+function toggleCart(){document.getElementById('cartModal').classList.toggle('show')}
+function closeCartOutside(e){if(e.target===document.getElementById('cartModal'))toggleCart()}
+
+function showToast(msg){
+  const n=document.createElement('div');
+  n.className='toast';n.textContent=msg;
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(),2000);
+}
+
+/* ── SCROLL REVEAL ── */
+function initReveal(){
+  const obs=new IntersectionObserver(e=>{
+    e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('visible')}});
+  },{threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+});
+
+/* ── HAMBURGER ── */
+document.getElementById('hamburger').addEventListener('click',()=>{
+  document.getElementById('mobileNav').classList.toggle('open');
+});
+function closeMobile(){document.getElementById('mobileNav').classList.remove('open')}
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
+  });
+});
+
+/* ── INIT ── */
+renderMenu();
+updateCart();
+initReveal();
+</script>
+</body>
+</html>
